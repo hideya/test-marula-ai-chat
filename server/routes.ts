@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { setupAuth } from "./auth";
 import { storage } from "./storage";
-import { getChatResponse } from "./openai";
+import { getChatResponse, generateThreadTitle } from "./openai";
 
 export function registerRoutes(app: Express): Server {
   setupAuth(app);
@@ -31,7 +31,7 @@ export function registerRoutes(app: Express): Server {
     const { content } = req.body;
 
     const userMessage = await storage.createMessage(threadId, content, "user");
-    
+
     // Get thread messages for context
     const messages = await storage.getMessages(threadId);
     const chatMessages = messages.map(m => ({
@@ -46,6 +46,10 @@ export function registerRoutes(app: Express): Server {
       aiResponse,
       "assistant"
     );
+
+    // Generate and update thread title
+    const newTitle = await generateThreadTitle(chatMessages);
+    await storage.updateThreadTitle(threadId, newTitle);
 
     res.json([userMessage, assistantMessage]);
   });
