@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar } from "@/components/ui/avatar";
 import { User, Bot, Loader2 } from "lucide-react";
 import { useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
 
 export function MessageList({ threadId, isLoading }: { threadId: number; isLoading?: boolean }) {
   const { data: messages = [] } = useQuery<Message[]>({
@@ -39,11 +40,15 @@ export function MessageList({ threadId, isLoading }: { threadId: number; isLoadi
             <div
               className={`rounded-lg px-4 py-2 max-w-[80%] ${
                 message.role === "assistant"
-                  ? "bg-secondary text-secondary-foreground"
+                  ? "bg-secondary text-secondary-foreground prose prose-sm dark:prose-invert"
                   : "bg-primary text-primary-foreground"
               }`}
             >
-              {message.content}
+              {message.role === "assistant" ? (
+                <ReactMarkdown>{message.content}</ReactMarkdown>
+              ) : (
+                message.content
+              )}
             </div>
           </div>
         ))}

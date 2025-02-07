@@ -62,6 +62,34 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            color: 'inherit',
+            a: {
+              color: 'inherit',
+              '&:hover': {
+                color: 'var(--tw-prose-links)',
+              },
+            },
+            pre: {
+              backgroundColor: 'hsl(var(--muted))',
+              color: 'hsl(var(--muted-foreground))',
+            },
+            code: {
+              backgroundColor: 'hsl(var(--muted))',
+              color: 'hsl(var(--muted-foreground))',
+              fontWeight: '400',
+              '&::before': {
+                content: '""',
+              },
+              '&::after': {
+                content: '""',
+              },
+            },
+          },
+        },
+      },
       keyframes: {
         "accordion-down": {
           from: {
