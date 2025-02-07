@@ -2,10 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Message } from "@shared/schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar } from "@/components/ui/avatar";
-import { User, Bot } from "lucide-react";
+import { User, Bot, Loader2 } from "lucide-react";
 import { useEffect, useRef } from "react";
 
-export function MessageList({ threadId }: { threadId: number }) {
+export function MessageList({ threadId, isLoading }: { threadId: number; isLoading?: boolean }) {
   const { data: messages = [] } = useQuery<Message[]>({
     queryKey: [`/api/threads/${threadId}/messages`],
   });
@@ -47,6 +47,16 @@ export function MessageList({ threadId }: { threadId: number }) {
             </div>
           </div>
         ))}
+        {isLoading && (
+          <div className="flex items-start gap-4">
+            <Avatar className="mt-1">
+              <Bot className="h-5 w-5" />
+            </Avatar>
+            <div className="rounded-lg px-4 py-2 bg-secondary text-secondary-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+            </div>
+          </div>
+        )}
       </div>
     </ScrollArea>
   );

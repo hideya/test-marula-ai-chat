@@ -14,6 +14,7 @@ import { User, LogOut } from "lucide-react";
 
 export default function ChatPage() {
   const [selectedThreadId, setSelectedThreadId] = useState<number>();
+  const [isLoading, setIsLoading] = useState(false);
   const { user, logoutMutation } = useAuth();
 
   return (
@@ -52,9 +53,9 @@ export default function ChatPage() {
         {selectedThreadId ? (
           <>
             <div className="flex-1 overflow-hidden">
-              <MessageList threadId={selectedThreadId} />
+              <MessageList threadId={selectedThreadId} isLoading={isLoading} />
             </div>
-            <MessageInput threadId={selectedThreadId} />
+            <MessageInput threadId={selectedThreadId} onLoadingChange={setIsLoading} />
           </>
         ) : (
           <div className="flex-1 flex items-center justify-center text-muted-foreground">

@@ -6,7 +6,13 @@ import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
-export function MessageInput({ threadId }: { threadId: number }) {
+export function MessageInput({ 
+  threadId, 
+  onLoadingChange 
+}: { 
+  threadId: number;
+  onLoadingChange: (loading: boolean) => void;
+}) {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -16,10 +22,28 @@ export function MessageInput({ threadId }: { threadId: number }) {
     if (!message.trim() || isLoading) return;
 
     setIsLoading(true);
+    onLoadingChange(true);
+
     try {
+      // まず、ユーザーのメッセージをキャッシュに追加
+      const optimisticMessage = {
+        id: Date.now(),
+        threadId,
+        content: message,
+        role: "user" as const,
+        createdAt: new Date().toISOString(),
+      };
+
+      queryClient.setQueryData(
+        [`/api/threads/${threadId}/messages`],
+        (old: any[] = []) => [...old, optimisticMessage]
+      );
+
+      // APIリクエストを送信
       await apiRequest("POST", `/api/threads/${threadId}/messages`, {
         content: message,
       });
+
       setMessage("");
       // メッセージリストとスレッドリストの両方を更新
       queryClient.invalidateQueries({
@@ -36,6 +60,7 @@ export function MessageInput({ threadId }: { threadId: number }) {
       });
     } finally {
       setIsLoading(false);
+      onLoadingChange(false);
     }
   };
 
