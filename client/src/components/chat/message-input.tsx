@@ -21,8 +21,12 @@ export function MessageInput({ threadId }: { threadId: number }) {
         content: message,
       });
       setMessage("");
+      // メッセージリストとスレッドリストの両方を更新
       queryClient.invalidateQueries({
         queryKey: [`/api/threads/${threadId}/messages`],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/threads"],
       });
     } catch (error) {
       toast({

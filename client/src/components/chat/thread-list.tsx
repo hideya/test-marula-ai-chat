@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Plus, MessageSquare } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { queryClient } from "@/lib/queryClient";
 
 export function ThreadList({
   selectedThreadId,
@@ -23,6 +24,8 @@ export function ThreadList({
       const res = await apiRequest("POST", "/api/threads");
       const thread = await res.json();
       onThreadSelect(thread.id);
+      // スレッドリストを再取得
+      queryClient.invalidateQueries({ queryKey: ["/api/threads"] });
     } catch (error) {
       toast({
         title: "Error",
