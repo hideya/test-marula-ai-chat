@@ -34,15 +34,17 @@ export async function generateThreadTitle(messages: ChatMessage[]): Promise<stri
       messages: [
         {
           role: "system",
-          content: "あなたはチャット履歴からタイトルを生成するアシスタントです。会話の内容を20文字以内で要約してタイトルとして返してください。",
+          content: "あなたはチャット履歴からタイトルを生成するアシスタントです。会話の内容を20文字以内で要約してタイトルとして返してください。余計な説明は不要です。",
         },
-        ...messages,
+        ...messages.slice(-3), // 最新の3つのメッセージのみを使用
       ],
       temperature: 0.7,
       max_tokens: 50,
     });
 
-    return response.choices[0].message.content?.slice(0, 20) || "New Chat";
+    const title = response.choices[0].message?.content?.trim() || "New Chat";
+    console.log("Generated title:", title); // デバッグログ
+    return title;
   } catch (error: any) {
     console.error("Failed to generate title:", error);
     return "New Chat";

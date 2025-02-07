@@ -30,6 +30,7 @@ export function registerRoutes(app: Express): Server {
     const threadId = parseInt(req.params.threadId);
     const { content } = req.body;
 
+    // Create user message
     const userMessage = await storage.createMessage(threadId, content, "user");
 
     // Get thread messages for context
@@ -49,7 +50,9 @@ export function registerRoutes(app: Express): Server {
 
     // Generate and update thread title
     const newTitle = await generateThreadTitle(chatMessages);
-    await storage.updateThreadTitle(threadId, newTitle);
+    console.log("Generating new title:", newTitle); // デバッグログ
+    const updatedThread = await storage.updateThreadTitle(threadId, newTitle);
+    console.log("Updated thread:", updatedThread); // デバッグログ
 
     res.json([userMessage, assistantMessage]);
   });
