@@ -2,7 +2,7 @@ import { User, Thread, Message, InsertUser } from "@shared/schema";
 import session from "express-session";
 import { users, threads, messages } from "@shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import connectPg from "connect-pg-simple";
 import { pool } from "./db";
 
@@ -58,7 +58,7 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(threads)
       .where(eq(threads.userId, userId))
-      .orderBy(threads.createdAt, "desc");  // createdAtで降順ソート
+      .orderBy(desc(threads.createdAt)); // desc()を使用して降順ソート
   }
 
   async createThread(userId: number, title: string): Promise<Thread> {
