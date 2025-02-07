@@ -54,7 +54,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getThreads(userId: number): Promise<Thread[]> {
-    return await db.select().from(threads).where(eq(threads.userId, userId));
+    return await db
+      .select()
+      .from(threads)
+      .where(eq(threads.userId, userId))
+      .orderBy(threads.createdAt, "desc");  // createdAtで降順ソート
   }
 
   async createThread(userId: number, title: string): Promise<Thread> {

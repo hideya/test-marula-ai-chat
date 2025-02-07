@@ -18,8 +18,9 @@ export default function ChatPage() {
 
   return (
     <div className="h-screen flex">
-      <div className="w-80 border-r">
-        <div className="h-14 border-b flex items-center justify-between px-4">
+      {/* サイドバー */}
+      <div className="w-80 border-r flex flex-col">
+        <div className="h-14 border-b flex items-center justify-between px-4 flex-shrink-0">
           <h1 className="font-semibold">AI Chat</h1>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -38,22 +39,26 @@ export default function ChatPage() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <ThreadList
-          selectedThreadId={selectedThreadId}
-          onThreadSelect={setSelectedThreadId}
-        />
+        <div className="flex-1 overflow-hidden">
+          <ThreadList
+            selectedThreadId={selectedThreadId}
+            onThreadSelect={setSelectedThreadId}
+          />
+        </div>
       </div>
-      <div className="flex-1 flex flex-col">
+
+      {/* メインコンテンツ */}
+      <div className="flex-1 flex flex-col overflow-hidden">
         {selectedThreadId ? (
           <>
-            <div className="flex-1">
+            <div className="flex-1 overflow-hidden">
               <MessageList threadId={selectedThreadId} />
             </div>
             <MessageInput threadId={selectedThreadId} />
           </>
         ) : (
           <div className="flex-1 flex items-center justify-center text-muted-foreground">
-            Select or create a chat to start messaging
+            チャットを選択するか、新規チャットを作成してください
           </div>
         )}
       </div>

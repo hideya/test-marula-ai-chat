@@ -3,14 +3,24 @@ import { Message } from "@shared/schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar } from "@/components/ui/avatar";
 import { User, Bot } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 export function MessageList({ threadId }: { threadId: number }) {
   const { data: messages = [] } = useQuery<Message[]>({
     queryKey: [`/api/threads/${threadId}/messages`],
   });
 
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  // 新しいメッセージが来たら自動的に最下部にスクロール
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
-    <ScrollArea className="h-full">
+    <ScrollArea className="h-full" ref={scrollAreaRef}>
       <div className="space-y-4 p-4">
         {messages.map((message) => (
           <div
